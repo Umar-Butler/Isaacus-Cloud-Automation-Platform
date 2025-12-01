@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Isaacus Cloud Automation Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Isaacus is an AI-powered cloud automation and orchestration platform built on Google Cloud, helping businesses deploy, scale, and operate applications with high reliability and minimal operational overhead." />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.15);
+      --accent-strong: #22c55e;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --card: #0f172a;
+      --max-width: 1040px;
+      --radius-xl: 18px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 46%, #000 100%);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px 40px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+
+    header {
+      padding: 18px 22px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 52%),
+        radial-gradient(circle at top right, rgba(94, 234, 212, 0.12), transparent 52%),
+        linear-gradient(to bottom right, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+      backdrop-filter: blur(26px);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background:
+        conic-gradient(from 210deg, #22c55e, #0ea5e9, #4f46e5, #a855f7, #22c55e);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-mark-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 11px;
+      background: radial-gradient(circle at 30% 0, rgba(248, 250, 252, 0.2), transparent 50%),
+                  radial-gradient(circle at 0 100%, rgba(34, 197, 94, 0.18), transparent 58%),
+                  #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 650;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      background-color: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #bef264, #22c55e);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.26);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.35fr);
+      gap: 22px;
+    }
+
+    section {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(15, 118, 110, 0.2), transparent 55%),
+                  linear-gradient(to bottom right, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
+      padding: 22px 22px 20px;
+    }
+
+    .section-alt {
+      background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.18), transparent 55%),
+                  linear-gradient(to bottom left, rgba(15, 23, 42, 0.99), rgba(15, 23, 42, 0.96));
+    }
+
+    h1 {
+      font-size: clamp(26px, 3vw, 30px);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .hero-kicker {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(to right, #e5e7eb, #a5b4fc, #6ee7b7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-body {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      max-width: 580px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.85);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #e5e7eb;
+    }
+
+    .pill span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .section-heading {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .section-body {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .bullet {
+      margin-top: 6px;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom right, #a5b4fc, #22c55e);
+      flex-shrink: 0;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.75);
+      font-size: 11px;
+      color: #e5e7eb;
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #a855f7, #4f46e5);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .metric {
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.3), transparent 60%);
+      font-size: 11px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+      color: #e5e7eb;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 11px;
+      color: #e5e7eb;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .contact-card {
+      margin-top: 14px;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .contact-details div {
+      color: var(--text-muted);
+    }
+
+    .contact-cta a {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, 0.85);
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.9), rgba(37, 99, 235, 0.9));
+      font-size: 11px;
+      font-weight: 500;
+      color: #e5e7eb;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.7);
+      white-space: nowrap;
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: #a5b4fc;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 880px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        padding: 18px 10px 26px;
+      }
+
+      header {
+        padding: 14px;
+      }
+
+      section {
+        padding: 16px 14px 15px;
+      }
+
+      .metric-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .contact-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <header>
+        <div class="brand">
+          <div class="brand-mark">
+            <div class="brand-mark-inner">IS</div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">Isaacus</div>
+            <div class="brand-tagline">Cloud Automation • Built on Google Cloud • Australia</div>
+          </div>
+        </div>
+        <div class="header-pill">
+          <div class="dot"></div>
+          <span>Production-ready solution powered by Google Cloud</span>
+        </div>
+      </header>
+
+      <main>
+        <!-- LEFT: Narrative & business value -->
+        <section>
+          <div class="hero-kicker">Solution overview</div>
+          <h1>
+            <span class="hero-highlight">Isaacus Cloud Automation Platform</span><br />
+            Modernizing operations with autonomous infrastructure intelligence.
+          </h1>
+          <p class="hero-body">
+            Isaacus is an AI-powered cloud automation and orchestration platform built on
+            <strong>Google Cloud</strong> to help organisations deploy, scale, and operate applications with
+            high reliability and minimal operational overhead. By combining policy-driven infrastructure
+            provisioning, secure CI/CD, intelligent autoscaling, and real-time observability, Isaacus
+            transforms complex DevOps processes into a simple, repeatable, and self-optimising workflow.
+          </p>
+
+          <div class="hero-grid">
+            <div class="pill">
+              Cloud automation platform
+              <span>Isaacus</span>
+            </div>
+            <div class="pill">
+              Built on Google Cloud
+              <span>Cloud Run · GKE · Cloud Build</span>
+            </div>
+            <div class="pill">
+              For digital businesses
+              <span>SMBs · Product teams</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <div class="section-title">Business challenges</div>
+            <p class="section-body">
+              Many small and mid-sized teams lack dedicated SRE/DevOps capacity, resulting in manual
+              deployments, inconsistent environments, fragile scripts, and limited visibility into
+              production health. These constraints slow down releases, increase incidents, and inflate
+              cloud spend.
+            </p>
+            <ul class="bullet-list">
+              <li>
+                <div class="bullet"></div>
+                <div>Manual infrastructure changes and environment drift across staging and production.</div>
+              </li>
+              <li>
+                <div class="bullet"></div>
+                <div>Fragmented CI/CD pipelines, limited policy enforcement, and high operational risk.</div>
+              </li>
+              <li>
+                <div class="bullet"></div>
+                <div>Insufficient observability and slow incident response, impacting customer experience.</div>
+              </li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <div class="section-title">Isaacus solution</div>
+            <p class="section-body">
+              Isaacus abstracts away the heavy lifting of operating on Google Cloud. Teams define
+              high-level intent—such as environments, policies, and performance objectives—while the
+              platform continuously configures and orchestrates the underlying infrastructure.
+            </p>
+            <ul class="bullet-list">
+              <li>
+                <div class="bullet"></div>
+                <div>
+                  <strong>Autonomous provisioning</strong> – Framework-driven templates create secure,
+                  repeatable environments on Google Cloud in minutes.
+                </div>
+              </li>
+              <li>
+                <div class="bullet"></div>
+                <div>
+                  <strong>Zero-touch CI/CD</strong> – Integrated with Cloud Build for automated build,
+                  test, and deploy pipelines governed by policy.
+                </div>
+              </li>
+              <li>
+                <div class="bullet"></div>
+                <div>
+                  <strong>Intelligent operations</strong> – Workload behaviour is analysed to optimise
+                  autoscaling, reduce cost, and surface anomalies in real time.
+                </div>
+              </li>
+              <li>
+                <div class="bullet"></div>
+                <div>
+                  <strong>Security & compliance by design</strong> – Opinionated IAM, network policies,
+                  and configuration baselines reduce misconfiguration risk.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <div class="section-title">Measurable outcomes</div>
+            <div class="metric-grid">
+              <div class="metric">
+                <strong>58%</strong>
+                Reduction in deployment time by standardising CI/CD on Google Cloud.
+              </div>
+              <div class="metric">
+                <strong>≤ 40%</strong>
+                Lower infrastructure management cost through automation and rightsizing.
+              </div>
+              <div class="metric">
+                <strong>↑ Reliability</strong>
+                Improved uptime via automated remediation and consistent, policy-driven environments.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: Architecture & product specifics -->
+        <section class="section-alt">
+          <div class="section-title">Technical architecture</div>
+          <h2 class="section-heading">Natively integrated with Google Cloud services</h2>
+          <p class="section-body">
+            Isaacus is architected as a multi-tenant SaaS platform running entirely on Google Cloud,
+            following Google-recommended patterns for security, scalability, and observability.
+          </p>
+
+          <ul class="bullet-list">
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Google Kubernetes Engine (GKE)</strong> orchestrates long-running microservices
+                and control-plane components.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Cloud Run</strong> powers event-driven and stateless automation tasks with
+                per-request scaling.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Cloud Build</strong> provides secure CI/CD pipelines, connected to Git
+                repositories for automated build and deploy workflows.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Artifact Registry</strong> stores signed container images with controlled
+                promotion across environments.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Cloud SQL / Firestore</strong> hold configuration, automation policies, and
+                tenancy metadata.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Cloud Logging & Cloud Monitoring</strong> deliver end-to-end observability with
+                curated dashboards and proactive alerting.
+              </div>
+            </li>
+            <li>
+              <div class="bullet"></div>
+              <div>
+                <strong>Cloud IAM</strong> underpins fine-grained, least-privilege access control for
+                both users and service identities.
+              </div>
+            </li>
+          </ul>
+
+          <div class="badge-row">
+            <div class="badge">
+              <div class="badge-dot"></div>
+              Built as a multi-tenant SaaS for modern teams
+            </div>
+            <div class="badge">
+              <div class="badge-dot"></div>
+              Aligned with Google Cloud Architecture Framework
+            </div>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <div class="section-title">Primary use cases</div>
+            <div class="chip-row">
+              <div class="chip">Cloud-native application deployment</div>
+              <div class="chip">Standardised CI/CD on GCP</div>
+              <div class="chip">Environment as code</div>
+              <div class="chip">Cost-aware autoscaling</div>
+              <div class="chip">SRE / DevOps enablement</div>
+              <div class="chip">SMB platform modernisation</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <div class="section-title">Company</div>
+            <p class="section-body">
+              Isaacus Pty Ltd is an Australia-based technology company focused on making enterprise-grade
+              cloud operations accessible to fast-growing digital businesses. The platform is built and
+              operated on <strong>Google Cloud</strong> and designed to integrate seamlessly into existing
+              engineering workflows.
+            </p>
+            <div class="contact-card">
+              <div class="contact-details">
+                <div><strong>Isaacus</strong></div>
+                <div>Website: <a href="https://isaacus.cc" target="_blank" rel="noreferrer">https://isaacus.cc</a></div>
+                <div>Email: <a href="mailto:umar@isaacus.cc">umar@isaacus.cc</a></div>
+                <div>Location: Australia</div>
+              </div>
+              <div class="contact-cta">
+                <a href="mailto:umar@isaacus.cc?subject=Isaacus%20Cloud%20Automation%20Enquiry">
+                  Contact Isaacus
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        This page describes the Isaacus Cloud Automation Platform, a production-ready solution built on
+        Google Cloud. Use this URL as the reference link for Google Cloud Partner solution qualification.
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
